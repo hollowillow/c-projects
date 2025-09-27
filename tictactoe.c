@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
-// try to build a game of tic-tac-toe
-// features:
-//      any size board
-//      board deliminators
-//      let players take turns
-//      check win condition/set win condition
+
+// function prototypes
+void defineRules(void);
+void setBoard(void);
+void freeBoard(void);
+void drawBoard(void);
+void playerMove(char);
+void playGame(void);
+int checkSequence(int,int,int,int,char);
+int checkWin(char);
+int main(void);
 
 // global variables
 int boardSize;
@@ -55,20 +60,20 @@ void freeBoard(void) {
 
 void drawBoard(void) {
         for (int row = 0; row < boardSize; row++) {
-                // print top border
+                // draw top borders
                 for (int column = 0; column < boardSize; column++) {
                         printf("+---");
                 }
                 printf("+\n");
 
-                // print side border
+                // draw side borders
                 for (int column = 0; column < boardSize; column++) {
                         printf("| %c ",board[row][column]);
                 }
                 printf("|\n");
         }
 
-        // print bottom border
+        // draw bottom border
         for (int column = 0; column < boardSize; column++) {
                 printf("+---");
         }
@@ -158,13 +163,9 @@ void playGame(void) {
 }
 
 int main(void) {
-        setBoardSize();
-        allocateBoard();
-
-        initializeBoard();
-
+        defineRules();
+        setBoard();
         playGame();
-
         freeBoard();
 
         return 0;
