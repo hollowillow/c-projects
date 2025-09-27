@@ -77,20 +77,21 @@ void drawBoard(void) {
 
 void playerMove(char mark) {
         int row, column;
-        printf("Enter column: ");
-        scanf("%i", &column);
-        printf("Enter row: ");
-        scanf("%i", &row);
+        printf("Enter column (1 to %i): ",boardSize); scanf("%i", &column);
+        printf("Enter row (1 to %i): ",boardSize); scanf("%i", &row);
         row--; column--; // adjust for indexing
 
+        // recurse until valid move is made
         if (row < 0 || row >= boardSize || column < 0 || column >= boardSize) {
                 printf("Invalid coordinates!\n");
-                playerMove(mark); // recurse until valid move is made
-        } else if (board[row][column] == '.') {
-                board[row][column] = mark;
-        } else {
+                playerMove(mark);
+                return;
+        } else if (board[row][column] != ' ') {
                 printf("Space already occupied!\n");
-                playerMove(mark); // recurse until valid move is made
+                playerMove(mark);
+                return;
+        } else {
+                board[row][column] = mark;
         }
 }
 
