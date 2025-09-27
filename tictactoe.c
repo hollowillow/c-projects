@@ -10,35 +10,47 @@
 // global variables
 int boardSize;
 char **board;
+int winCondition;
 
-void setBoardSize(void) {
-    printf("Enter the board size: ");
-    scanf("%d", &boardSize);
+void defineRules(void) {
+        // recurse until valid rules defined
+        printf("Enter the board size: ");
+        scanf("%i", &boardSize);
+        if (boardSize < 3) {
+                printf("Board size too small!\n");
+                defineRules();
+                return;
+        }
+
+        printf("Enter the number of marks needed to win: ");
+        scanf("%i", &winCondition);
+        if (winCondition > boardSize) {
+                printf("Win condition too large!\n");
+                defineRules();
+                return;
+        } else if (winCondition < 3) {
+                printf("Win condition too small!\n");
+                defineRules();
+                return;
+
+        }
 }
 
-void allocateBoard(void) {
-    // allocate memory for the board
-    board = malloc(boardSize * sizeof(char *));
-    for (int i = 0; i < boardSize; i++) {
-        board[i] = malloc(boardSize * sizeof(char));
-    }
+void setBoard(void) {
+        board = malloc(boardSize * sizeof(char *));
+        for (int row = 0; row < boardSize; row++) {
+                board[row] = malloc(boardSize * sizeof(char));
+                for (int column = 0; column < boardSize; column++) {
+                        board[row][column] = ' ';
+                }
+        }
 }
 
 void freeBoard(void) {
-    // free allocated memory
-    for (int i = 0; i < boardSize; i++) {
-        free(board[i]);
+    for (int row = 0; row < boardSize; row++) {
+        free(board[row]);
     }
     free(board);
-}
-
-void initializeBoard(void) {
-        for (int row = 0; row < boardSize; row++) {
-                for (int column = 0; column < boardSize; column++) {
-                        // set initial character
-                        board[row][column] = '.';
-                }
-        }
 }
 
 void drawBoard(void) {
