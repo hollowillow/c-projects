@@ -95,16 +95,64 @@ void playerMove(char mark) {
         }
 }
 
-void playGame(void) {
-        for (int turn = 0; turn < 9; turn++) {
-                drawBoard(); // draw current board state
+int checkSequence(int startRow, int startCol, int rowIncrement, int colIncrement, char mark) {
+        int count = 0;
+        for (int index = 0; index < winCondition; index++) {
+                if (board[startRow + index * rowIncrement][startCol + index * colIncrement] == mark) {
+                        count++;
+                }
+        }
+        return count == winCondition;
+}
 
-                if (turn % 2 == 0) {
+int checkWin(char mark) {
+        // Check rows and columns
+        for (int index = 0; index < boardSize; index++) {
+                for (int startCol = 0; startCol <= boardSize - winCondition; startCol++) {
+                        if (checkSequence(index, startCol, 0, 1, mark) || // check row
+                            checkSequence(startCol, index, 1, 0, mark)) { // check column
+                                return 1; // win found
+                        }
+                }
+        }
+
+        // Check diagonals
+        for (int startRow = 0; startRow <= boardSize - winCondition; startRow++) {
+                for (int startCol = 0; startCol <= boardSize - winCondition; startCol++) {
+                        if (checkSequence(startRow, startCol, 1, 1, mark) || // Check top-left to bottom-right
+                            checkSequence(startRow, startCol + winCondition - 1, 1, -1, mark)) { // Check top-right to bottom-left
+                                return 1; // Win found
+                        }
+                }
+        }
+
+        return 0; // No win found
+}
+
+void playGame(void) {
+        for (int turn = 0; turn <= boardSize * boardSize; turn++) {
+                drawBoard(); // draw current board state each turn
+
+                // if maximum number of moves for boardSize reached, tie
+                if (turn == boardSize * boardSize) {
+                        printf("\nYou have reached a tie!\n");
+                        drawBoard();
+                } else if (turn % 2 == 0) { // else X on even turns
                         printf("\nPlayer 1 (x)\n");
                         playerMove('x');
-                } else {
+                        if (checkWin('x')) {
+                                printf("\nPlayer 1 (x) wins!\n");
+                                drawBoard();
+                                break;
+                        };
+                } else { // O on odd turns
                         printf("\nPlayer 2 (o)\n");
                         playerMove('o');
+                        if (checkWin('o')) {
+                                printf("\nPlayer 2 (o) wins!\n");
+                                drawBoard();
+                                break;
+                        };
                 }
         }
 }
