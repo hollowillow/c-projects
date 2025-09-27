@@ -17,7 +17,7 @@ void setBoardSize(void) {
 }
 
 void allocateBoard(void) {
-    // Allocate memory for the board
+    // allocate memory for the board
     board = malloc(boardSize * sizeof(char *));
     for (int i = 0; i < boardSize; i++) {
         board[i] = malloc(boardSize * sizeof(char));
@@ -25,7 +25,7 @@ void allocateBoard(void) {
 }
 
 void freeBoard(void) {
-    // Free allocated memory
+    // free allocated memory
     for (int i = 0; i < boardSize; i++) {
         free(board[i]);
     }
@@ -33,34 +33,67 @@ void freeBoard(void) {
 }
 
 void initializeBoard(void) {
-        for (int i = 0; i < boardSize; i++) {
-                for (int j = 0; j < boardSize; j++) {
+        for (int row = 0; row < boardSize; row++) {
+                for (int column = 0; column < boardSize; column++) {
                         // set initial character
-                        board[i][j] = '.';
+                        board[row][column] = '.';
                 }
         }
 }
 
 void drawBoard(void) {
-        for (int i = 0; i < boardSize; i++) {
+        for (int row = 0; row < boardSize; row++) {
                 // print top border
-                for (int j = 0; j < boardSize; j++) {
+                for (int column = 0; column < boardSize; column++) {
                         printf("+---");
                 }
                 printf("+\n");
 
                 // print side border
-                for (int j = 0; j < boardSize; j++) {
-                        printf("| %c ",board[i][j]);
+                for (int column = 0; column < boardSize; column++) {
+                        printf("| %c ",board[row][column]);
                 }
                 printf("|\n");
         }
 
         // print bottom border
-        for (int j = 0; j < boardSize; j++) {
+        for (int column = 0; column < boardSize; column++) {
                 printf("+---");
         }
         printf("+\n");
+}
+
+void playerMove(char mark) {
+        int row, column;
+        printf("Enter column: ");
+        scanf("%i", &column);
+        printf("Enter row: ");
+        scanf("%i", &row);
+        row--; column--; // adjust for indexing
+
+        if (row < 0 || row >= boardSize || column < 0 || column >= boardSize) {
+                printf("Invalid coordinates!\n");
+                playerMove(mark); // recurse until valid move is made
+        } else if (board[row][column] == '.') {
+                board[row][column] = mark;
+        } else {
+                printf("Space already occupied!\n");
+                playerMove(mark); // recurse until valid move is made
+        }
+}
+
+void playGame(void) {
+        for (int turn = 0; turn < 9; turn++) {
+                drawBoard(); // draw current board state
+
+                if (turn % 2 == 0) {
+                        printf("\nPlayer 1 (x)\n");
+                        playerMove('x');
+                } else {
+                        printf("\nPlayer 2 (o)\n");
+                        playerMove('o');
+                }
+        }
 }
 
 int main(void) {
@@ -68,7 +101,8 @@ int main(void) {
         allocateBoard();
 
         initializeBoard();
-        drawBoard();
+
+        playGame();
 
         freeBoard();
 
